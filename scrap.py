@@ -1,13 +1,13 @@
 from curl_cffi import requests
 from bs4 import BeautifulSoup
-import asyncio
 from tqdm import tqdm
 import json
-import pandas as pd
+# import asyncio
+# import pandas as pd
 
-async def search_items(search_item, itens):
+async def search_items(search_item, items):
     final_links = []
-    numbers_pages = (itens // 50) + (1 if itens % 50 > 0 else 0)
+    numbers_pages = (items // 50) + (1 if items % 50 > 0 else 0)
     for page_number in range(numbers_pages):
         page = await url(search_item, page_number + 1)
         response = requests.request("GET", page, impersonate="chrome")
@@ -20,9 +20,11 @@ async def search_items(search_item, itens):
     return final_links
 
 async def url(search_item, item_number):
-    page_number = ((item_number - 1) // 50) + 1
-    desde = ((page_number - 1) * 50) + 1
-    return(f"https://lista.mercadolivre.com.br/{search_item}/_Desde_{desde}_AGE*GROUP_6725189_NoIndex_True")
+    if item_number % 50 == 0:
+        page_number = (item_number // 50 - 1) * 48 + 1
+    else:
+        page_number = (item_number // 50) * 48 + 1
+    return(f"https://lista.mercadolivre.com.br/{search_item}/_Desde_{page_number}_NoIndex_True")
 
 async def parser_product(links):
     products = []
@@ -34,25 +36,24 @@ async def parser_product(links):
             soup.find("script", {"type": "application/ld+json"}).string
         )
         product = {
-            "preco": data_json["offers"]["price"],
-            "titulo": data_json["name"],
-            "imagem": data_json["image"],
+            "product_link": link,
+            "product_price": data_json["offers"]["price"],
+            "product_title": data_json["name"],
+            "product_image": data_json["image"],
         }
         products.append(product)
 
     print(len(products))
     return products
 
-def to_save(products):
+# def to_save(products):
+#     df = pd.DataFrame(products)
+#     return df.to_csv("marketfree/scrap_data.csv", index=False)
 
-    df = pd.DataFrame(products)
-
-    return df.to_csv("marketfree/scrap_data.csv", index=False)
-
-async def main():
-    links = await search_items('microfone', 100)
-    products = await parser_product(links)
-    to_save(products)
+async def main(search_item, items):
+    links = await search_items(search_item,items)
+    return await parser_product(links)
+    # to_save(products)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    print(main(search_item="", items=1))
