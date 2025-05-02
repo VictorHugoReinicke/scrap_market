@@ -47,10 +47,10 @@ def to_save(products):
 
     df = pd.DataFrame(products)
 
-    return df.to_csv("mercado_livre/dados_raspagem.csv", index=False)
+    return df.to_csv("marketfree/scrap_data.csv", index=False)
 
 async def main():
-    links = await search_items('graxa', 100)
+    links = await search_items('microfone', 100)
     products = await parser_product(links)
     to_save(products)
 
