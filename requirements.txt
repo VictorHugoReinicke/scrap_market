@@ -1,0 +1,6 @@
+fastapi
+curl_cffi
+beautifulsoup4
+tqdm
+pandas
+uvicorn
