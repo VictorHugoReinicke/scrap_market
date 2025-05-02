@@ -36,5 +36,7 @@ pip install -r requirements.txt
 ```
 uvicorn main:app
 ```
-`Then access your localhost (probably http://127.0.0.1:8000 by default) and then put /docs to see the api´
-
+`Then access your localhost(probably http://127.0.0.1:800 by default) and then put /docs to see the api`
+```
+http://127.0.0.1:8000/docs
+```
