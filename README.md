@@ -22,7 +22,7 @@ git clone https://github.com/VictorHugoReinicke/scrap_market.git
 ```
 `3st. Access the paste with`
 ```
-cd scarp_market
+cd scrap_market
 ```
 `
 4st. Install all the necessary library:
